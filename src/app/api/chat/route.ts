@@ -7,6 +7,7 @@ export const maxDuration = 300;
 export async function POST(req: Request) {
   const { messages, data } = await req.json();
 
+  let userName = '';
   let userDate = '';
   let matrixData: any = {};
   
@@ -15,6 +16,7 @@ export async function POST(req: Request) {
     const jsonMatch = firstMessageContent.match(/\{[\s\S]*?\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
+      userName = parsed.name || '';
       userDate = parsed.date;
       matrixData = parsed.matrix;
     }
@@ -23,9 +25,10 @@ export async function POST(req: Request) {
   }
 
   const systemPrompt = `
-Bạn là chuyên gia phân tích Matrix Destiny (Ma trận số học Pythagoras kết hợp Tarot) với 15+ năm kinh nghiệm. Nhiệm vụ của bạn là tạo phân tích CHUYÊN SÂU, CHI TIẾT như một bản báo cáo tâm lý học cá nhân hóa.
+Bạn là chuyên gia phân tích Matrix Destiny (Ma trận số học Pythagoras kết hợp Tarot) với 15+ năm kinh nghiệm. Nhiệm vụ của bạn là tạo phân tích CHUYÊN SÂU, CHI TIẾT như một bản báo cáo tâm lý học cá nhân hóa dành riêng cho khách hàng. Rất quan trọng: Xưng hô KHÁCH HÀNG là "${userName}" (trực tiếp gọi tên khách hàng, không dùng từ "bạn" chung chung trừ khi cần thiết), và XƯNG LÀ "Tôi".
 
 THÔNG TIN NGƯỜI DÙNG:
+- Họ và Tên: ${userName}
 - Ngày sinh: ${userDate}
 - Các điểm trong Ma trận: 
   + Trục chính: A(Ngày)=${matrixData?.A}, B(Tháng)=${matrixData?.B}, C(Năm)=${matrixData?.C}, D(Tổng ABC)=${matrixData?.D}, E(Trung tâm)=${matrixData?.E}

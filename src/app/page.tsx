@@ -5,9 +5,10 @@ import { calculateMatrix, MatrixDestiny } from '@/utils/matrixDestiny';
 import MatrixVisualizer from '@/components/MatrixVisualizer';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Calendar, Sparkles, Loader2 } from 'lucide-react';
+import { Calendar, Sparkles, Loader2, User } from 'lucide-react';
 
 export default function Home() {
+  const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [matrix, setMatrix] = useState<MatrixDestiny | null>(null);
   
@@ -16,7 +17,7 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date) return;
+    if (!date || !name) return;
 
     // parse YYYY-MM-DD
     const [yearStr, monthStr, dayStr] = date.split('-');
@@ -29,9 +30,10 @@ export default function Home() {
     setIsLoading(true);
 
     const userMessageContent = JSON.stringify({
+      name: name,
       date: `${day}/${month}/${year}`,
       matrix: calculatedMatrix
-    }) + `\n\nXin chào, ngày sinh của tôi là ${day}/${month}/${year}. Hãy phân tích cặn kẽ dựa trên ngày sinh này theo đúng các yêu cầu phân tích nhé.`;
+    }) + `\n\nXin chào, tôi tên là ${name}, ngày sinh của tôi là ${day}/${month}/${year}. Hãy phân tích cặn kẽ dựa trên ngày sinh này theo đúng các yêu cầu phân tích nhé.`;
     
     // Set initial user message
     const initialMessages = [{ role: 'user', content: userMessageContent }];
@@ -57,8 +59,6 @@ export default function Home() {
         if (done) break;
         
         const chunk = decoder.decode(value, { stream: true });
-        // The ai sdk returns structured lines sometimes starting with 0:..., clean it briefly if needed or just append raw for simple streamText. 
-        // We will just try appending raw as standard streamText output returns raw text.
         assistantContent += chunk.replace(/^0:/gm, '').replace(/"/g, '').replace(/\\n/g, '\n'); 
         
         setMessages(prev => {
@@ -90,7 +90,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
-            Nhập ngày sinh của bạn để khám phá Bản Đồ Vận Mệnh 22 Arcana. Nhận bản phân tích tâm lý học chuyên sâu lên tới 10,000 chữ về cuộc đời, tính cách và tiềm năng của bạn.
+            Nhập tên và ngày sinh của bạn để khám phá Bản Đồ Vận Mệnh 22 Arcana. Nhận bản phân tích tâm lý học chuyên sâu lên tới 10,000 chữ về cuộc đời, tính cách và tiềm năng của bạn.
           </p>
         </div>
 
@@ -99,6 +99,23 @@ export default function Home() {
           <div className="bg-white dark:bg-zinc-900 shadow-xl rounded-2xl p-8 sm:p-12 ring-1 ring-zinc-200 dark:ring-zinc-800 backdrop-blur-sm max-w-lg mx-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2 text-zinc-700 dark:text-zinc-300">
+                  Họ và Tên
+                </label>
+                <div className="relative mb-6">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User className="h-5 w-5 text-zinc-400" />
+                  </div>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={name}
+                    placeholder="Nguyễn Văn A"
+                    onChange={(e) => setName(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-3 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-zinc-50 dark:bg-zinc-950 transition-colors"
+                  />
+                </div>
                 <label htmlFor="dob" className="block text-sm font-medium mb-2 text-zinc-700 dark:text-zinc-300">
                   Ngày Sinh (Dương Lịch)
                 </label>
