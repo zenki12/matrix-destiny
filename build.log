@@ -1,0 +1,43 @@
+
+> matrix-destiny@0.1.0 build
+> next build
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\ADMIN\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\ADMIN\.gemini\antigravity\scratch\matrix-destiny\package-lock.json
+
+▲ Next.js 16.1.7 (Turbopack)
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./.gemini/antigravity/scratch/matrix-destiny/src/app/page.tsx:4:1
+Module not found: Can't resolve 'ai/react'
+[0m [90m 2 |[39m
+ [90m 3 |[39m [36mimport[39m { useState } [36mfrom[39m [32m'react'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { useChat } [36mfrom[39m [32m'ai/react'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { calculateMatrix[33m,[39m [33mMatrixDestiny[39m } [36mfrom[39m [32m'@/utils/matrixDestiny'[39m[33m;[39m
+ [90m 6 |[39m [36mimport[39m [33mMatrixVisualizer[39m [36mfrom[39m [32m'@/components/MatrixVisualizer'[39m[33m;[39m
+ [90m 7 |[39m [36mimport[39m [33mReactMarkdown[39m [36mfrom[39m [32m'react-markdown'[39m[33m;[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./.gemini/antigravity/scratch/matrix-destiny/src/app/page.tsx [Client Component Browser]
+    ./.gemini/antigravity/scratch/matrix-destiny/src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./.gemini/antigravity/scratch/matrix-destiny/src/app/page.tsx [Client Component SSR]
+    ./.gemini/antigravity/scratch/matrix-destiny/src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./.gemini/antigravity/scratch/matrix-destiny/src/app/page.tsx:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)

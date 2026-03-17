@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Matrix Destiny Analyzer
 
-## Getting Started
+Website phân tích Matrix Destiny (Ma trận vận mệnh) cá nhân hóa, miễn phí và không cần đăng nhập.
 
-First, run the development server:
+## Cài Đặt Khởi Chạy Local
+
+Bạn cần có Node.js trên máy:
 
 ```bash
+# Cài đặt
+npm install
+
+# Khởi chạy dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Cần tạo file `.env.local` ở thư mục gốc chứa key Gemini API (miễn phí):
+`GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key_here`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Hướng Dẫn Deploy Miễn Phí Trên Vercel 🚀
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Vì yêu cầu website "không mất phí" và "triển khai trên Vercel", bạn chỉ cần làm các bước sau để đưa nó lên mạng:
 
-## Learn More
+1. Đẩy code này lên một **GitHub Repository** của bạn (chế độ Public hoặc Private đều được).
+2. Đăng nhập vào [Vercel](https://vercel.com/) bằng tài khoản GitHub.
+3. Nhấp vào **"Add New Project"** và import repository bạn vừa tạo.
+4. Ở phần **Environment Variables** cấu hình biến:
+   - Key: `GOOGLE_GENERATIVE_AI_API_KEY`
+   - Value: [Lấy API key Gemini của bạn tại Google AI Studio](https://aistudio.google.com/app/apikey) (Miễn phí hoàn toàn).
+5. Nhấp **Deploy** và chờ 1 phút. Xong! 🎉
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Giao diện sẽ tự động thích ứng với cấu hình màn hình và chế độ Sáng/Tối. Người dùng chỉ cần nhập ngày sinh, AI sẽ sinh ra bản báo cáo Destiny Matrix 10.000 chữ siêu chi tiết (sử dụng model `gemini-2.5-pro` hỗ trợ logic cực tốt và viết dài).
