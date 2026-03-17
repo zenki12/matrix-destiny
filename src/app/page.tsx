@@ -71,12 +71,23 @@ export default function Home() {
            return newMessages;
         });
       }
+      
+      if (!assistantContent.trim()) {
+        throw new Error("Luồng dữ liệu AI bị rỗng. Vui lòng kiểm tra lại API Key hoặc hệ thống Vercel có thể đã Timeout vì giới hạn tài khoản miễn phí (Hobby).");
+      }
     } catch (error: any) {
       console.error(error);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: `**Đã xảy ra lỗi:** Lấy phản hồi thất bại.\n\nChi tiết: ${error.message}\n\nVui lòng làm mới trang (F5) hoặc kiểm tra lại khóa API Vercel của bạn.` 
-      }]);
+      setMessages(prev => {
+        const newMessages = [...prev];
+        // If the last message was the empty assistant placeholder, replace it
+        if (newMessages[newMessages.length - 1].role === 'assistant' && !newMessages[newMessages.length - 1].content) {
+          newMessages.pop();
+        }
+        return [...newMessages, { 
+          role: 'assistant', 
+          content: `**Đã xảy ra lỗi:** Lấy phản hồi thất bại.\n\nChi tiết: ${error.message}\n\nVui lòng làm mới trang (F5) hoặc kiểm tra lại khóa API Vercel của bạn.` 
+        }];
+      });
     } finally {
       setIsLoading(false);
     }
