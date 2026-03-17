@@ -46,6 +46,10 @@ export default function Home() {
         body: JSON.stringify({ messages: initialMessages })
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error (${response.status}): ${errorText.substring(0, 100)}...`);
+      }
       if (!response.body) throw new Error('No response body');
 
       const reader = response.body.getReader();
@@ -67,8 +71,12 @@ export default function Home() {
            return newMessages;
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: `**Đã xảy ra lỗi:** Lấy phản hồi thất bại.\n\nChi tiết: ${error.message}\n\nVui lòng làm mới trang (F5) hoặc kiểm tra lại khóa API Vercel của bạn.` 
+      }]);
     } finally {
       setIsLoading(false);
     }
