@@ -6,11 +6,18 @@ export const maxDuration = 300;
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const { messages, data } = await req.json();
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    return new Response(
+      "Lỗi Server: Thiếu khóa API GOOGLE_GENERATIVE_AI_API_KEY. Vui lòng vào trang quản lý Vercel của dự án > Settings > Environment Variables để thêm khóa này, sau đó Redeploy lại.", 
+      { status: 500 }
+    );
+  }
+
+  const { messages } = await req.json();
 
   let userName = '';
   let userDate = '';
-  let matrixData: any = {};
+  let matrixData: Record<string, string | number> = {};
   
   try {
     const firstMessageContent = messages[0]?.content || '';
@@ -21,7 +28,7 @@ export async function POST(req: Request) {
       userDate = parsed.date;
       matrixData = parsed.matrix;
     }
-  } catch (e) {
+  } catch {
     console.error("Failed to parse matrix data from message");
   }
 

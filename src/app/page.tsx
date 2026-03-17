@@ -75,8 +75,9 @@ export default function Home() {
       if (!assistantContent.trim()) {
         throw new Error("Luồng dữ liệu AI bị rỗng. Vui lòng kiểm tra lại API Key hoặc hệ thống Vercel có thể đã Timeout vì giới hạn tài khoản miễn phí (Hobby).");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       setMessages(prev => {
         const newMessages = [...prev];
         // If the last message was the empty assistant placeholder, replace it
@@ -85,7 +86,7 @@ export default function Home() {
         }
         return [...newMessages, { 
           role: 'assistant', 
-          content: `**Đã xảy ra lỗi:** Lấy phản hồi thất bại.\n\nChi tiết: ${error.message}\n\nVui lòng làm mới trang (F5) hoặc kiểm tra lại khóa API Vercel của bạn.` 
+          content: `**Đã xảy ra lỗi:** Lấy phản hồi thất bại.\n\nChi tiết: ${errorMessage}\n\nVui lòng làm mới trang (F5) hoặc kiểm tra lại khóa API Vercel của bạn.` 
         }];
       });
     } finally {
@@ -93,7 +94,7 @@ export default function Home() {
     }
   };
 
-  const assistantMessages = messages.filter((m: any) => m.role === 'assistant');
+  const assistantMessages = messages.filter((m: {role: string, content: string}) => m.role === 'assistant');
   const latestMessage = assistantMessages[assistantMessages.length - 1];
 
   return (
