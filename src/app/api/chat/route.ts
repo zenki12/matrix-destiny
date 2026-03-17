@@ -7,8 +7,20 @@ export const maxDuration = 300;
 export async function POST(req: Request) {
   const { messages, data } = await req.json();
 
-  const userDate = data?.date;
-  const matrixData = data?.matrix;
+  let userDate = '';
+  let matrixData: any = {};
+  
+  try {
+    const firstMessageContent = messages[0]?.content || '';
+    const jsonMatch = firstMessageContent.match(/\{[\s\S]*?\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      userDate = parsed.date;
+      matrixData = parsed.matrix;
+    }
+  } catch (e) {
+    console.error("Failed to parse matrix data from message");
+  }
 
   const systemPrompt = `
 Bạn là chuyên gia phân tích Matrix Destiny (Ma trận số học Pythagoras kết hợp Tarot) với 15+ năm kinh nghiệm. Nhiệm vụ của bạn là tạo phân tích CHUYÊN SÂU, CHI TIẾT như một bản báo cáo tâm lý học cá nhân hóa.

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useChat } from '@ai-sdk/react';
 import { calculateMatrix, MatrixDestiny } from '@/utils/matrixDestiny';
 import MatrixVisualizer from '@/components/MatrixVisualizer';
 import ReactMarkdown from 'react-markdown';
@@ -11,12 +10,11 @@ import { Calendar, Sparkles, Loader2 } from 'lucide-react';
 export default function Home() {
   const [date, setDate] = useState('');
   const [matrix, setMatrix] = useState<MatrixDestiny | null>(null);
+  
+  const [messages, setMessages] = useState<{role: string, content: string}[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { messages, append, isLoading } = useChat({
-    api: '/api/chat',
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!date) return;
 
@@ -28,20 +26,55 @@ export default function Home() {
 
     const calculatedMatrix = calculateMatrix(day, month, year);
     setMatrix(calculatedMatrix);
+    setIsLoading(true);
 
-    append({
-      role: 'user',
-      content: `Xin chào, ngày sinh của tôi là ${day}/${month}/${year}. Hãy phân tích cặn kẽ dựa trên ngày sinh này theo đúng các yêu cầu phân tích nhé.`,
-    }, {
-      data: {
-        date: `${day}/${month}/${year}`,
-        matrix: calculatedMatrix as any
+    const userMessageContent = JSON.stringify({
+      date: `${day}/${month}/${year}`,
+      matrix: calculatedMatrix
+    }) + `\n\nXin chào, ngày sinh của tôi là ${day}/${month}/${year}. Hãy phân tích cặn kẽ dựa trên ngày sinh này theo đúng các yêu cầu phân tích nhé.`;
+    
+    // Set initial user message
+    const initialMessages = [{ role: 'user', content: userMessageContent }];
+    setMessages(initialMessages);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: initialMessages })
+      });
+
+      if (!response.body) throw new Error('No response body');
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let assistantContent = '';
+
+      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        // The ai sdk returns structured lines sometimes starting with 0:..., clean it briefly if needed or just append raw for simple streamText. 
+        // We will just try appending raw as standard streamText output returns raw text.
+        assistantContent += chunk.replace(/^0:/gm, '').replace(/"/g, '').replace(/\\n/g, '\n'); 
+        
+        setMessages(prev => {
+           const newMessages = [...prev];
+           newMessages[newMessages.length - 1].content = assistantContent;
+           return newMessages;
+        });
       }
-    });
-
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const assistantMessages = messages.filter(m => m.role === 'assistant');
+  const assistantMessages = messages.filter((m: any) => m.role === 'assistant');
   const latestMessage = assistantMessages[assistantMessages.length - 1];
 
   return (
