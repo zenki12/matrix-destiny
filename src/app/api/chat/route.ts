@@ -3,6 +3,7 @@ import { streamText } from 'ai';
 
 // Allow responses up to 5 mins
 export const maxDuration = 300;
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
   const { messages, data } = await req.json();
